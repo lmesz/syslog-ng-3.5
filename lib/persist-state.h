@@ -30,6 +30,12 @@
 typedef struct _PersistState PersistState;
 typedef guint32 PersistEntryHandle;
 
+typedef enum _PersistStateMode {
+  persist_mode_normal = 0,
+  persist_mode_dump,
+  persist_mode_edit
+} PersistStateMode;
+
 gpointer persist_state_map_entry(PersistState *self, PersistEntryHandle handle);
 void persist_state_unmap_entry(PersistState *self, PersistEntryHandle handle);
 
@@ -47,7 +53,7 @@ gboolean persist_state_commit(PersistState *self);
 void persist_state_cancel(PersistState *self);
 void persist_state_set_mode(PersistState *self, PersistStateMode mode);
 
-PersistState *persist_state_new(const gchar *filename);
+PersistState *persist_state_new(const gchar *filename, PersistStateMode persist_mode_normal);
 void persist_state_free(PersistState *self);
 
 GList *persist_state_get_key_list(PersistState *self);

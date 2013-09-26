@@ -12,7 +12,7 @@ test_values(void)
   gchar *data;
 
   unlink("test_values.persist");
-  state = persist_state_new("test_values.persist");
+  state = persist_state_new("test_values.persist", persist_mode_normal);
   if (!persist_state_start(state))
     {
       fprintf(stderr, "Error starting persist_state object\n");
@@ -64,7 +64,7 @@ test_values(void)
   persist_state_free(state);
 
   /* reopen */
-  state = persist_state_new("test_values.persist");
+  state = persist_state_new("test_values.persist", persist_mode_normal);
   if (!persist_state_start(state))
     {
       fprintf(stderr, "Error starting persist_state object\n");

@@ -146,6 +146,9 @@ struct _PersistState
   PersistEntryHandle current_key_block;
   gint current_key_ofs;
   gint current_key_size;
+
+  /* This is required because of state dump function */
+  PersistStateMode mode;
 };
 
 typedef struct _PersistEntry
@@ -543,7 +546,7 @@ persist_state_load_v4(PersistState *self)
                     }
 
                   header = (PersistValueHeader *) ((gchar *) map + entry_ofs - sizeof(PersistValueHeader));
-                  if (header->in_use)
+                  if (header->in_use || (self->mode != persist_mode_normal))
                     {
                       gpointer new_block;
                       PersistEntryHandle new_handle;
@@ -629,7 +632,7 @@ persist_state_load(PersistState *self)
       if (memcmp(magic, "SLP", 3) != 0)
         {
           msg_error("Persistent configuration file is in invalid format, ignoring", NULL);
-          success = TRUE;
+          success = self->mode == persist_mode_dump ? FALSE : TRUE;
           goto close_and_exit;
         }
       version = magic[3] - '0';
@@ -838,6 +841,7 @@ persist_state_start(PersistState *self)
 gboolean
 persist_state_commit(PersistState *self)
 {
+  g_assert(self->mode != persist_mode_dump);
   if (!persist_state_commit_store(self))
     return FALSE;
   return TRUE;
@@ -868,7 +872,7 @@ persist_state_cancel(PersistState *self)
 }
 
 PersistState *
-persist_state_new(const gchar *filename)
+persist_state_new(const gchar *filename, PersistStateMode mode)
 {
   PersistState *self = g_new0(PersistState, 1);
 
@@ -879,6 +883,7 @@ persist_state_new(const gchar *filename)
   self->mapped_lock = g_mutex_new();
   self->mapped_release_cond = g_cond_new();
   self->version = 4;
+  self->mode = mode;
   return self;
 }
 
