@@ -45,8 +45,10 @@ void persist_state_free_entry(PersistEntryHandle handle);
 gboolean persist_state_start(PersistState *self);
 gboolean persist_state_commit(PersistState *self);
 void persist_state_cancel(PersistState *self);
+void persist_state_set_mode(PersistState *self, PersistStateMode mode);
 
 PersistState *persist_state_new(const gchar *filename);
 void persist_state_free(PersistState *self);
 
+GList *persist_state_get_key_list(PersistState *self);
 #endif

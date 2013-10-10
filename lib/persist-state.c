@@ -901,3 +901,8 @@ persist_state_free(PersistState *self)
   g_hash_table_destroy(self->keys);
   g_free(self);
 }
+GList *
+persist_state_get_key_list(PersistState *self)
+{
+  return g_hash_table_get_keys(self->keys);
+}
