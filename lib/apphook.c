@@ -36,6 +36,7 @@
 #include "afinter.h"
 #include "template/templates.h"
 #include "gsocket.h"
+#include "state.h"
 
 #include <iv.h>
 #include <iv_work.h>
@@ -149,6 +150,7 @@ app_startup(void)
   log_tags_global_init();
   log_source_global_init();
   log_template_global_init();
+  state_handler_register_default_constructors();
 }
 
 void
