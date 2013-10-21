@@ -35,6 +35,7 @@
 #include "logwriter.h"
 #include "afinter.h"
 #include "template/templates.h"
+#include "gsocket.h"
 
 #include <iv.h>
 #include <iv_work.h>
@@ -133,6 +134,7 @@ app_fatal(const char *msg)
 void 
 app_startup(void)
 {
+  g_socket_global_init();
   msg_init(FALSE);
   iv_set_fatal_msg_handler(app_fatal);
   iv_init();
@@ -182,4 +184,5 @@ app_shutdown(void)
   dns_cache_global_deinit();
   msg_deinit();
   iv_deinit();
+  g_socket_global_deinit();
 }
