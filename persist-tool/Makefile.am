@@ -1,9 +1,19 @@
-export top_srcdir
-moduledir = @moduledir@
-AM_CPPFLAGS = -I$(top_srcdir)/lib -I../lib
 
-bin_PROGRAMS = persist-tool
+persist_tool_persist_tool_CPPFLAGS=      \
+	$(AM_CPPFLAGS)
 
-persist_tool_SOURCES = persist-tool.c persist-tool.h dump.c dump.h add.c add.h generate.c generate.h generate-agent.c generate-agent.h $(top_srcdir)/lib/persist-state.c
+bin_PROGRAMS += persist-tool/persist-tool
 
-persist_tool_LDADD =  $(SYSLOG_NG_LIBS) -ljson
+persist_tool_persist_tool_SOURCES = \
+	persist-tool/persist-tool.c	\
+	persist-tool/persist-tool.h 	\
+	persist-tool/dump.c		\
+	persist-tool/dump.h		\
+	persist-tool/add.c		\
+	persist-tool/add.h		\
+	persist-tool/generate.c		\
+	persist-tool/generate.h		\
+	persist-tool/generate-agent.c	\
+	persist-tool/generate-agent.h
+
+persist_tool_persist_tool_LDADD =  $(SYSLOG_NG_LIBS) -ljson

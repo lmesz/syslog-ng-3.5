@@ -522,7 +522,7 @@ main_loop_initialize_state(GlobalConfig *cfg, const gchar *persist_filename)
 {
   gboolean success;
 
-  cfg->state = persist_state_new(persist_filename);
+  cfg->state = persist_state_new(persist_filename, persist_mode_normal);
   if (!persist_state_start(cfg->state))
     return FALSE;
 
