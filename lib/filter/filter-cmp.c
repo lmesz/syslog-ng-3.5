@@ -24,6 +24,7 @@
 
 #include "filter/filter-cmp.h"
 #include "filter/filter-expr-grammar.h"
+#include "scratch-buffers.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -44,8 +45,8 @@ gboolean
 fop_cmp_eval(FilterExprNode *s, LogMessage **msgs, gint num_msg)
 {
   FilterCmp *self = (FilterCmp *) s;
-  SBGString *left_buf = scratch_buffer_acquire();
-  SBGString *right_buf = scratch_buffer_acquire();
+  SBGString *left_buf = sb_gstring_acquire();
+  SBGString *right_buf = sb_gstring_acquire();
   gboolean result = FALSE;
   gint cmp;
 
