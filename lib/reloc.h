@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2002-2012 BalaBit IT Ltd, Budapest, Hungary
- * Copyright (c) 1998-2012 Balázs Scheidler
+ * Copyright (c) 2002-2013 BalaBit IT Ltd, Budapest, Hungary
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,7 +21,14 @@
  *
  */
 
-#include "syslog-ng.h"
+#ifndef RELOC_H_INCLUDED
+#define RELOC_H_INCLUDED
 
-GlobalConfig *configuration;
-int cfg_parser_debug;
+#include "syslog-ng.h"
+#include "cache.h"
+
+CacheResolver *path_resolver_new(const gchar *sysprefix);
+
+const gchar *get_installation_path(const gchar *template);
+
+#endif

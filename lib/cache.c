@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2002-2012 BalaBit IT Ltd, Budapest, Hungary
- * Copyright (c) 1998-2012 Balázs Scheidler
+ * Copyright (c) 2002-2013 BalaBit IT Ltd, Budapest, Hungary
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,8 +20,44 @@
  * COPYING for details.
  *
  */
+#include "cache.h"
 
-#include "syslog-ng.h"
+struct _Cache
+{
+  GHashTable *hash_table;
+  CacheResolver *resolver;
+};
 
-GlobalConfig *configuration;
-int cfg_parser_debug;
+Cache *
+cache_new(CacheResolver *resolver)
+{
+  Cache *self = g_new0(Cache, 1);
+
+  self->resolver = resolver;
+  self->hash_table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, resolver->free_elem);
+  return self;
+}
+
+void
+cache_free(Cache *self)
+{
+  cache_resolver_free(self->resolver);
+  g_hash_table_unref(self->hash_table);
+  g_free(self);
+}
+
+void *
+cache_lookup(Cache *self, const gchar *key)
+{
+  void *result = g_hash_table_lookup(self->hash_table, key);
+
+  if (!result)
+    {
+      result = cache_resolver_resolve_elem(self->resolver, key);
+      if (result)
+        {
+          g_hash_table_insert(self->hash_table, g_strdup(key), result);
+        }
+    }
+  return result;
+}

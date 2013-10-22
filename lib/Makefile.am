@@ -28,6 +28,7 @@ pkginclude_HEADERS			+= \
 	lib/apphook.h			\
 	lib/atomic.h			\
 	lib/block-ref-parser.h		\
+	lib/cache.h			\
 	lib/cfg.h			\
 	lib/cfg-grammar.h		\
 	lib/cfg-lexer.h			\
@@ -71,6 +72,7 @@ pkginclude_HEADERS			+= \
 	lib/poll-events.h		\
 	lib/poll-fd-events.h		\
 	lib/pragma-parser.h		\
+	lib/reloc.h			\
 	lib/scratch-buffers.h		\
 	lib/serialize.h			\
 	lib/stats.h			\
@@ -103,8 +105,9 @@ lib_libsyslog_ng_la_SOURCES		= \
 	lib/alarms.c			\
 	lib/apphook.c			\
 	lib/block-ref-parser.c		\
+	lib/cache.c			\
 	lib/cfg.c			\
-	lib/cfg-args.c		\
+	lib/cfg-args.c			\
 	lib/cfg-lexer.c			\
 	lib/cfg-lexer-subst.c		\
 	lib/cfg-parser.c		\
@@ -144,6 +147,7 @@ lib_libsyslog_ng_la_SOURCES		= \
 	lib/poll-events.c		\
 	lib/poll-fd-events.c		\
 	lib/pragma-parser.c		\
+	lib/reloc.c			\
 	lib/scratch-buffers.c		\
 	lib/serialize.c			\
 	lib/stats.c			\
