@@ -46,6 +46,7 @@ pkginclude_HEADERS			+= \
 	lib/gprocess.h			\
 	lib/gsockaddr.h			\
 	lib/gsocket.h			\
+	lib/hostname.h			\
 	lib/host-resolve.h		\
 	lib/logmatcher.h		\
 	lib/logmpx.h			\
@@ -123,6 +124,7 @@ lib_libsyslog_ng_la_SOURCES		= \
 	lib/gprocess.c			\
 	lib/gsockaddr.c			\
 	lib/gsocket.c			\
+	lib/hostname.c			\
 	lib/host-resolve.c		\
 	lib/logmatcher.c		\
 	lib/logmpx.c			\
@@ -195,7 +197,9 @@ EXTRA_DIST += \
 	lib/block-ref-grammar.ym	\
 	lib/pragma-grammar.ym		\
 	lib/merge-grammar.pl		\
-	lib/ivykis/configure.gnu
+	lib/ivykis/configure.gnu	\
+	lib/hostname-win32.c		\
+	lib/hostname-unix.c
 
 lib/plugin-types.h: lib/cfg-grammar.h
 

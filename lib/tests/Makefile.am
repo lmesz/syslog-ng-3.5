@@ -4,7 +4,8 @@ lib_tests_TESTS		= \
 	lib/tests/test_type_hints	\
 	lib/tests/test_parse_number	\
 	lib/tests/test_cache		\
-	lib/tests/test_reloc
+	lib/tests/test_reloc		\
+	lib/tests/test_hostname
 
 check_PROGRAMS		+= ${lib_tests_TESTS}
 
@@ -40,6 +41,12 @@ lib_tests_test_reloc_CFLAGS	=	\
 	$(TEST_CFLAGS)
 lib_tests_test_reloc_LDADD	=	\
 	$(TEST_LDADD)
+
+lib_tests_test_hostname_CFLAGS	=	\
+	$(TEST_CFLAGS)
+lib_tests_test_hostname_LDADD	=	\
+	$(TEST_LDADD)
+
 lib_tests_test_host_resolve_CFLAGS	=	\
 	$(TEST_CFLAGS)
 lib_tests_test_host_resolve_LDADD	=	\

@@ -44,8 +44,6 @@ gboolean resolve_group(const char *group, gint *gid);
 gboolean resolve_user_group(char *arg, gint *uid, gint *gid);
 
 /* name resolution */
-void reset_cached_hostname(void);
-const gchar *get_local_hostname(gsize *len);
 gchar *format_hex_string(gpointer str, gsize str_len, gchar *result, gsize result_len);
 gchar *find_cr_or_lf(gchar *s, gsize n);
 
