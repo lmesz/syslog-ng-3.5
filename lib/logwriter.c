@@ -29,6 +29,7 @@
 #include "mainloop.h"
 #include "ml-batched-timer.h"
 #include "str-format.h"
+#include "misc.h"
 
 #include <unistd.h>
 #include <assert.h>
@@ -661,7 +662,7 @@ log_writer_mark_timeout(void *cookie)
 
   msg = log_msg_new_mark();
   /* timeout: there was no new message on the writer or it is in periodical mode */
-  resolve_sockaddr(hostname, &hostname_len, msg->saddr, self->options->use_dns, self->options->use_fqdn, self->options->use_dns_cache, self->options->normalize_hostnames);
+  resolve_sockaddr_to_hostname(hostname, &hostname_len, msg->saddr, &self->options->host_resolve_options);
 
   log_msg_set_value(msg, LM_V_HOST, hostname, strlen(hostname));
 
@@ -1356,6 +1357,7 @@ log_writer_options_defaults(LogWriterOptions *options)
   options->padding = 0;
   options->mark_mode = MM_GLOBAL;
   options->mark_freq = -1;
+  host_resolve_options_defaults(&options->host_resolve_options);
 }
 
 void 
@@ -1408,6 +1410,7 @@ log_writer_options_init(LogWriterOptions *options, GlobalConfig *cfg, guint32 op
     return;
 
   log_template_options_init(&options->template_options, cfg);
+  host_resolve_options_init(&options->host_resolve_options, cfg);
   log_proto_client_options_init(&options->proto_options.super, cfg);
   options->options |= option_flags;
     
@@ -1435,10 +1438,6 @@ log_writer_options_init(LogWriterOptions *options, GlobalConfig *cfg, guint32 op
       options->mark_freq = cfg->mark_freq;
     }
 
-  options->use_dns = cfg->use_dns;
-  options->use_fqdn = cfg->use_fqdn;
-  options->use_dns_cache = cfg->use_dns_cache;
-  options->normalize_hostnames = cfg->normalize_hostnames;
   options->initialized = TRUE;
 }
 
@@ -1446,6 +1445,7 @@ void
 log_writer_options_destroy(LogWriterOptions *options)
 {
   log_template_options_destroy(&options->template_options);
+  host_resolve_options_destroy(&options->host_resolve_options);
   log_proto_client_options_destroy(&options->proto_options.super);
   log_template_unref(options->template);
   log_template_unref(options->file_template);

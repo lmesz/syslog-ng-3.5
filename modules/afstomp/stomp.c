@@ -20,15 +20,17 @@
  *
  */
 
+#include "stomp.h"
+#include "host-resolve.h"
+#include "misc.h"
+#include "messages.h"
+
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <poll.h>
 
-#include "misc.h"
-#include "stomp.h"
-#include "messages.h"
 
 #define STOMP_PARSE_HEADER 1
 #define STOMP_PARSE_DATA 2
@@ -106,7 +108,7 @@ stomp_connect(stomp_connection **connection_ref, char *hostname, int port)
     }
 
   conn->remote_sa = g_sockaddr_inet_new("127.0.0.1", port);
-  if (!resolve_hostname(&conn->remote_sa, hostname))
+  if (!resolve_hostname_to_sockaddr(&conn->remote_sa, hostname))
     {
       msg_error("Failed to resolve hostname in stomp driver",
                 evt_tag_str("hostname", hostname),

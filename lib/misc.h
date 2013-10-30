@@ -46,9 +46,6 @@ gboolean resolve_user_group(char *arg, gint *uid, gint *gid);
 /* name resolution */
 void reset_cached_hostname(void);
 const gchar *get_local_hostname(gsize *len);
-void resolve_sockaddr(gchar *result, gsize *result_len, GSockAddr *saddr, gboolean usedns, gboolean usefqdn, gboolean use_dns_cache, gboolean normalize_hostnames);
-gboolean resolve_hostname(GSockAddr **addr, gchar *name);
-
 gchar *format_hex_string(gpointer str, gsize str_len, gchar *result, gsize result_len);
 gchar *find_cr_or_lf(gchar *s, gsize n);
 
