@@ -31,7 +31,7 @@
 #include "cfg-parser.h"
 #include "persist-state.h"
 #include "template/templates.h"
-#include "hostname.h"
+#include "host-resolve.h"
 #include "type-hinting.h"
 
 #include <sys/types.h>
@@ -82,6 +82,7 @@ struct _GlobalConfig
   gchar *bad_hostname_re;
   gint dns_cache_size, dns_cache_expire, dns_cache_expire_failed;
   gchar *dns_cache_hosts;
+  gchar *custom_domain;
   gint time_reopen;
   gint time_reap;
   gint suppress;
