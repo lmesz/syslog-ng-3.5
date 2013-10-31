@@ -211,16 +211,13 @@ resolve_sockaddr(gchar *result, gsize *result_len, GSockAddr *saddr, gboolean us
     }
   else
     {
-      if (!local_hostname_fqdn[0])
-        reset_cached_hostname();
       if (usefqdn)
         {
-          /* avoid copy */
-          hname = local_hostname_fqdn;
+          hname = get_local_hostname_fqdn();
         }
       else
         {
-          hname = local_hostname_short;
+          hname = get_local_hostname_short();
         }
     }
   if (normalize_hostnames)
