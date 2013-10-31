@@ -197,7 +197,9 @@ EXTRA_DIST += \
 	lib/block-ref-grammar.ym	\
 	lib/pragma-grammar.ym		\
 	lib/merge-grammar.pl		\
-	lib/ivykis/configure.gnu
+	lib/ivykis/configure.gnu	\
+	lib/hostname-win32.c		\
+	lib/hostname-unix.c
 
 lib/plugin-types.h: lib/cfg-grammar.h
 
