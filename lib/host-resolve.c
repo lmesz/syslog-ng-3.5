@@ -45,41 +45,48 @@ normalize_hostname(gchar *result, gsize result_size, const gchar *hostname)
   result[i] = '\0'; /* the closing \0 is not copied by the previous loop */
 }
 
-gboolean
-resolve_hostname_to_sockaddr(GSockAddr **addr, gint family, const gchar *name)
+static gboolean
+is_wildcard_hostname(const gchar *name)
 {
-  if (!name || name[0] == 0)
-    {
-      union
-      {
-#ifdef HAVE_STRUCT_SOCKADDR_STORAGE
-        struct sockaddr_storage __sas;
-#endif
-        struct sockaddr_in __sin;
-        struct sockaddr __sa;
-      } sas;
+  return !name || name[0] == 0;
+}
 
-      /* return the wildcard address that can be used as a bind address */
-      memset(&sas, 0, sizeof(sas));
-      sas.__sa.sa_family = family;
-      switch (family)
-        {
-        case AF_INET:
-          *addr = g_sockaddr_inet_new2(((struct sockaddr_in *) &sas));
-          break;
-#if ENABLE_IPV6
-        case AF_INET6:
-          *addr = g_sockaddr_inet6_new2((struct sockaddr_in6 *) &sas);
-          break;
+static gboolean
+resolve_wildcard_hostname_to_sockaddr(GSockAddr **addr, gint family, const gchar *name)
+{
+  union
+  {
+#ifdef HAVE_STRUCT_SOCKADDR_STORAGE
+    struct sockaddr_storage __sas;
 #endif
-        default:
-          g_assert_not_reached();
-          break;
-        }
-      return TRUE;
+    struct sockaddr_in __sin;
+    struct sockaddr __sa;
+  } sas;
+
+  /* return the wildcard address that can be used as a bind address */
+  memset(&sas, 0, sizeof(sas));
+  sas.__sa.sa_family = family;
+  switch (family)
+    {
+    case AF_INET:
+      *addr = g_sockaddr_inet_new2(((struct sockaddr_in *) &sas));
+      break;
+#if ENABLE_IPV6
+    case AF_INET6:
+      *addr = g_sockaddr_inet6_new2((struct sockaddr_in6 *) &sas);
+      break;
+#endif
+    default:
+      g_assert_not_reached();
+      break;
     }
+  return TRUE;
+}
 
 #ifdef HAVE_GETADDRINFO
+static gboolean
+resolve_hostname_to_sockaddr_using_getaddrinfo(GSockAddr **addr, gint family, const gchar *name)
+{
   struct addrinfo hints;
   struct addrinfo *res;
 
@@ -106,15 +113,16 @@ resolve_hostname_to_sockaddr(GSockAddr **addr, gint family, const gchar *name)
           break;
         }
       freeaddrinfo(res);
+      return TRUE;
     }
-  else
-    {
-      msg_error("Error resolving hostname",
-                evt_tag_str("host", name),
-                NULL);
-      return FALSE;
-    }
+  return FALSE;
+}
+
 #else
+
+static gboolean
+resolve_hostname_to_sockaddr_using_gethostbyname(GSockAddr **addr, gint family, const gchar *name)
+{
   struct hostent *he;
 
   G_LOCK(resolv_lock);
@@ -137,18 +145,32 @@ resolve_hostname_to_sockaddr(GSockAddr **addr, gint family, const gchar *name)
           g_assert_not_reached();
           break;
         }
-      G_UNLOCK(resolv_lock);
     }
-  else
+  G_UNLOCK(resolv_lock);
+  return he != NULL;
+}
+#endif
+
+gboolean
+resolve_hostname_to_sockaddr(GSockAddr **addr, gint family, const gchar *name)
+{
+  gboolean result;
+
+  if (is_wildcard_hostname(name))
+    return resolve_wildcard_hostname_to_sockaddr(addr, family, name);
+
+#ifdef HAVE_GETADDRINFO
+  result = resolve_hostname_to_sockaddr_using_getaddrinfo(addr, family, name);
+#else
+  result = resolve_hostname_to_sockaddr_using_gethostbyname(addr, family, name);
+#endif
+  if (!result)
     {
-      G_UNLOCK(resolv_lock);
       msg_error("Error resolving hostname",
                 evt_tag_str("host", name),
                 NULL);
-      return FALSE;
     }
-#endif
-  return TRUE;
+  return result;
 }
 
 void
